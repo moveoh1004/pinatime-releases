@@ -1,0 +1,46 @@
+name: Windows updater validation
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/windows-validation.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download validation bundle
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://github.com/moveoh1004/pinatime-releases/releases/download/v0.1.0/updater-validation.zip -OutFile validation.zip
+          Expand-Archive validation.zip validation
+      - name: Installer engine tests
+        shell: pwsh
+        run: dotnet validation/engine/Updater.Tests.dll
+      - name: Package tests
+        shell: pwsh
+        run: python -m unittest discover -s validation/package/Tests -p "test_*.py" -v
+      - name: Native launcher install and repeat
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://github.com/moveoh1004/pinatime-releases/releases/download/v0.1.0/PINATIME_Launcher.exe -OutFile PINATIME_Launcher.exe
+          & ./PINATIME_Launcher.exe --check-only | Tee-Object first-run.txt
+          if ($LASTEXITCODE -ne 0) { throw 'First launcher run failed' }
+          $state = Join-Path $env:LOCALAPPDATA 'PINATIME/Install/current.json'
+          if (!(Test-Path $state)) { throw 'Installation was not activated' }
+          $before = Get-Content $state -Raw
+          & ./PINATIME_Launcher.exe --check-only | Tee-Object repeat-run.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Repeat launcher run failed' }
+          if ((Get-Content $state -Raw) -ne $before) { throw 'Repeat run replaced installation' }
+          if ((Get-Content repeat-run.txt -Raw) -match '다운로드') { throw 'Repeat run downloaded package' }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-launcher-logs
+          path: '*-run.txt'

@@ -1,9 +1,9 @@
 # PINATIME
 
-Windows launcher and game updates. Game source code is kept in a separate private repository.
+[Download PINATIME_Launcher.exe](https://github.com/moveoh1004/pinatime-releases/releases/latest/download/PINATIME_Launcher.exe)
 
-Download **PINATIME_Launcher.exe** from the latest release and run it. The launcher downloads the game on the first run and checks for updates on subsequent runs.
+Windows 10/11 x64. Run the launcher to install the game and check for updates before each launch. No GitHub login or separate .NET installation is required.
 
-Settings and saves remain in the game's existing user-data directory. If an update cannot be downloaded or verified, the launcher runs the previously installed version.
+Settings and saves remain in the game's existing user-data directory. If an update cannot be downloaded or verified, the launcher runs the previously verified version. Updates download the full game package.
 
-Releases are published after build validation. An empty Releases list means the first build is not published yet.
+Game source code is kept in a separate private repository. `updater-validation.zip` is a developer test bundle; players only need the launcher.

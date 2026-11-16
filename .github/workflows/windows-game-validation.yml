@@ -1,0 +1,64 @@
+name: Windows game release validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Download candidate and test engine
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v0.1.6 --repo moveoh1004/pinatime-releases --pattern 'pinatime-windows-v0.1.6.zip' --pattern pinatime-windows.json --dir candidate
+          if ($LASTEXITCODE -ne 0) { throw 'Candidate download failed' }
+          gh release download launcher-v1.3.0-dev.20261116 --repo moveoh1004/pinatime-releases --pattern updater-validation.zip
+          if ($LASTEXITCODE -ne 0) { throw 'Engine download failed' }
+          Expand-Archive updater-validation.zip validation
+      - name: Verify archive and real CSharp extraction
+        shell: pwsh
+        run: |
+          $m = Get-Content candidate/pinatime-windows.json -Raw | ConvertFrom-Json
+          $zip = Join-Path candidate $m.archive
+          if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $m.sha256) { throw 'Archive SHA256 mismatch' }
+          dotnet validation/engine/Updater.Tests.dll candidate | Tee-Object engine-tests.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Engine tests failed' }
+          Expand-Archive $zip player
+      - name: Start Windows player and capture
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms
+          Add-Type -AssemblyName System.Drawing
+          $log = Join-Path (Get-Location) 'player-smoke.log'
+          $p = Start-Process ./player/PINATIME.exe -ArgumentList @('-screen-fullscreen','0','-screen-width','960','-screen-height','540','-logFile',('"'+$log+'"')) -PassThru
+          try {
+            Start-Sleep -Seconds 35
+            $p.Refresh()
+            if ($p.HasExited) { throw "Player exited early: $($p.ExitCode)" }
+            if ($p.MainWindowHandle -eq [IntPtr]::Zero) { throw 'Player window missing' }
+            $screen = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bitmap = New-Object System.Drawing.Bitmap($screen.Width,$screen.Height)
+            $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+            $graphics.CopyFromScreen($screen.Location,[System.Drawing.Point]::Empty,$screen.Size)
+            $bitmap.Save((Join-Path (Get-Location) 'player-smoke.png'))
+            $graphics.Dispose(); $bitmap.Dispose()
+            if (!(Test-Path $log)) { throw 'Player log missing' }
+            $errors = Select-String -Path $log -Pattern 'NullReferenceException|MissingMethodException|TypeLoadException|DllNotFoundException|Fatal error|Crash!!!|Failed to load player'
+            if ($errors) { $errors | Out-Host; throw 'Runtime startup errors' }
+            'PASS Windows v0.1.6 player stayed running with a visible window for 35 seconds' | Out-File native-tests.txt
+          } finally {
+            if (!$p.HasExited) { [void]$p.CloseMainWindow(); if (!$p.WaitForExit(10000)) { $p.Kill(); $p.WaitForExit() } }
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-game-validation
+          path: |
+            *-tests.txt
+            player-smoke.*

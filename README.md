@@ -1,6 +1,6 @@
 # PINATIME
 
-[현재 런처 다운로드 · 1.2.0 개발 중](https://github.com/moveoh1004/pinatime-releases/releases/download/launcher-v1.2.0-dev.20261116/PINATIME_Launcher.exe)
+[현재 런처 다운로드 · 1.2.1 개발 중](https://github.com/moveoh1004/pinatime-releases/releases/download/launcher-v1.2.1-dev.20261116/PINATIME_Launcher.exe)
 
 Windows 10/11 x64. GitHub 로그인이나 별도 .NET 설치는 필요 없습니다.
 
@@ -10,8 +10,8 @@ Windows 10/11 x64. GitHub 로그인이나 별도 .NET 설치는 필요 없습니
 - 삭제 시 설정·저장 데이터는 유지합니다. 경로를 바꾸려면 삭제 후 다시 설치합니다.
 - 패치가 제공되고 기준 버전이 일치하면 변경된 파일만 받습니다. 처음 설치·기준 불일치·패치 실패는 전체 ZIP으로 처리합니다.
 
-**런처와 게임 버전은 별개입니다.** 현재 런처는 1.2.0 개발 중, 자동 설치되는 정식 게임은 2026-11-05의 v0.1.5입니다. 최근 로컬 게임 수정은 이 게임 배포에 포함되지 않았습니다. 게임 v0.1.5에는 패치가 없어 전체 ZIP을 받습니다.
+**런처와 게임 버전은 별개입니다.** 현재 런처는 1.2.1 개발 중, 자동 설치되는 정식 게임은 2026-11-05의 v0.1.5입니다. 최근 로컬 게임 수정은 이 게임 배포에 포함되지 않았습니다. 게임 v0.1.5에는 패치가 없어 전체 ZIP을 받습니다.
 
 현재 런처는 위 링크에서 받습니다. 이전 독립 런처 자산은 삭제했으며 과거 게임 ZIP과 그 안에 포함된 파일은 당시 검증 정보 유지를 위해 보존합니다. 기존에 다운로드한 런처는 자동 교체되지 않으므로 이번 버전을 한 번 받아 주세요.
 
-[개발 릴리스·검증 상태](https://github.com/moveoh1004/pinatime-releases/releases/tag/launcher-v1.2.0-dev.20261116). `updater-validation.zip`은 개발 검사용이며 플레이에는 필요 없습니다. 게임 소스는 별도 비공개 저장소에서 관리합니다.
+[개발 릴리스·검증 상태](https://github.com/moveoh1004/pinatime-releases/releases/tag/launcher-v1.2.1-dev.20261116). `updater-validation.zip`은 개발 검사용이며 플레이에는 필요 없습니다. 게임 소스는 별도 비공개 저장소에서 관리합니다.

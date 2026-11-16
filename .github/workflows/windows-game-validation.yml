@@ -18,7 +18,7 @@ jobs:
         run: |
           gh release download v0.1.6 --repo moveoh1004/pinatime-releases --pattern 'pinatime-windows-v0.1.6.zip' --pattern pinatime-windows.json --dir candidate
           if ($LASTEXITCODE -ne 0) { throw 'Candidate download failed' }
-          gh release download launcher-v1.3.0-dev.20261116 --repo moveoh1004/pinatime-releases --pattern updater-validation.zip
+          gh release download launcher-v1.4.0-dev.20261117 --repo moveoh1004/pinatime-releases --pattern updater-validation.zip
           if ($LASTEXITCODE -ne 0) { throw 'Engine download failed' }
           Expand-Archive updater-validation.zip validation
       - name: Verify archive and real CSharp extraction

@@ -1,13 +1,12 @@
 name: Windows updater validation
 on:
   workflow_dispatch:
-  push:
-    paths: ['.github/workflows/windows-validation.yml']
 permissions:
   contents: read
 jobs:
   validate:
     runs-on: windows-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/setup-dotnet@v4
         with:
@@ -15,32 +14,30 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Download validation bundle
+      - name: Download current launcher and validation bundle
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          Invoke-WebRequest https://github.com/moveoh1004/pinatime-releases/releases/download/v0.1.0/updater-validation.zip -OutFile validation.zip
-          Expand-Archive validation.zip validation
+          gh release download launcher-v1.2.0-dev.20261116 --repo moveoh1004/pinatime-releases --pattern PINATIME_Launcher.exe --pattern updater-validation.zip
+          Expand-Archive updater-validation.zip validation
       - name: Installer engine tests
         shell: pwsh
-        run: dotnet validation/engine/Updater.Tests.dll
+        run: |
+          dotnet validation/engine/Updater.Tests.dll | Tee-Object engine-tests.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Engine tests failed' }
       - name: Package tests
         shell: pwsh
-        run: python -m unittest discover -s validation/package/Tests -p "test_*.py" -v
-      - name: Native launcher install and repeat
-        shell: pwsh
         run: |
-          Invoke-WebRequest https://github.com/moveoh1004/pinatime-releases/releases/download/v0.1.0/PINATIME_Launcher.exe -OutFile PINATIME_Launcher.exe
-          & ./PINATIME_Launcher.exe --check-only | Tee-Object first-run.txt
-          if ($LASTEXITCODE -ne 0) { throw 'First launcher run failed' }
-          $state = Join-Path $env:LOCALAPPDATA 'PINATIME/Install/current.json'
-          if (!(Test-Path $state)) { throw 'Installation was not activated' }
-          $before = Get-Content $state -Raw
-          & ./PINATIME_Launcher.exe --check-only | Tee-Object repeat-run.txt
-          if ($LASTEXITCODE -ne 0) { throw 'Repeat launcher run failed' }
-          if ((Get-Content $state -Raw) -ne $before) { throw 'Repeat run replaced installation' }
-          if ((Get-Content repeat-run.txt -Raw) -match '다운로드') { throw 'Repeat run downloaded package' }
+          python -m unittest discover -s validation/package/Tests -p "test_*.py" -v
+          if ($LASTEXITCODE -ne 0) { throw 'Package tests failed' }
+      - name: Native installation and uninstall
+        shell: pwsh
+        run: ./validation/windows_install_smoke.ps1 | Tee-Object native-tests.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: native-launcher-logs
-          path: '*-run.txt'
+          name: native-launcher-validation
+          path: |
+            *-tests.txt
+            launcher-installed.png

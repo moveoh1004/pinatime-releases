@@ -2,7 +2,7 @@
 
 HanseiTeam Games
 
-[런처 다운로드 · 1.3.0 개발 중](https://github.com/moveoh1004/pinatime-releases/releases/download/launcher-v1.3.0-dev.20261116/PINATIME_Launcher.exe)
+[런처 다운로드 · 1.4.0 개발 중](https://github.com/moveoh1004/pinatime-releases/releases/download/launcher-v1.4.0-dev.20261117/PINATIME_Launcher.exe)
 
 현재 게임: **v0.1.6 · 개발 중** (2026-11-17). 현재 로컬 게임 변경을 포함한 Windows x64 빌드입니다. 기존 런처에서 `업데이트 · 실행`을 누르면 받습니다.
 
@@ -15,6 +15,8 @@ HanseiTeam Games
 
 [게임 v0.1.6 릴리스·변경 및 검증 범위](https://github.com/moveoh1004/pinatime-releases/releases/tag/v0.1.6)
 
-게임 ZIP을 직접 받으면 압축을 풀고 `PINATIME.exe`를 실행합니다. 게임은 시작할 때 업데이트를 확인합니다. 런처 자체 자동 교체는 없지만 이미 런처 1.3.0을 받았다면 이번 게임 업데이트를 위해 다시 받을 필요는 없습니다.
+게임 ZIP을 직접 받으면 압축을 풀고 `PINATIME.exe`를 실행합니다. 게임은 시작할 때 업데이트를 확인합니다. 런처 자체 자동 교체는 없지만 이미 런처 1.4.0을 받았다면 이번 게임 업데이트를 위해 다시 받을 필요는 없습니다.
 
-독립 런처는 1.3.0만 유지합니다. 과거 게임 ZIP은 당시 검증 정보 보존을 위해 유지합니다. 개발 검사용 `updater-validation.zip`은 플레이에 필요 없습니다. 소스는 별도 비공개 저장소에서 관리합니다.
+독립 런처는 1.4.0만 유지합니다. 과거 게임 ZIP은 당시 검증 정보 보존을 위해 유지합니다. 개발 검사용 `updater-validation.zip`은 플레이에 필요 없습니다. 소스는 별도 비공개 저장소에서 관리합니다.
+
+런처 1.4.0은 다운로드·파일 설치·검사의 진행률, 현재 파일명, 처리 용량을 표시합니다. 관리자 작업의 진행 상황도 원래 창에서 확인합니다.

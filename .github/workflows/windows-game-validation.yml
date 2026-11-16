@@ -2,7 +2,7 @@ name: Windows game release validation
 on:
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write # GitHub requires push access to read draft releases
 jobs:
   validate:
     runs-on: windows-latest

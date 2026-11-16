@@ -19,7 +19,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download launcher-v1.2.0-dev.20261116 --repo moveoh1004/pinatime-releases --pattern PINATIME_Launcher.exe --pattern updater-validation.zip
+          gh release download launcher-v1.2.1-dev.20261116 --repo moveoh1004/pinatime-releases --pattern PINATIME_Launcher.exe --pattern updater-validation.zip
           Expand-Archive updater-validation.zip validation
       - name: Installer engine tests
         shell: pwsh
